@@ -4,7 +4,9 @@ FROM python:3-alpine
 ENV VOLUME_DRIVER local
 ENV CRON_SCHEDULE 0 0 * * *
 ENV BACKUP_RETENTION 12M
+ENV FORCE_BACKUP_CLEANUP false
 ENV BACKUP_DIR /backup
+ENV HOST_DIR /host
 
 # Install the python Docker library
 RUN pip3 install docker

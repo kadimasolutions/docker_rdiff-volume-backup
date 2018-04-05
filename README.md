@@ -8,7 +8,7 @@ This is a Docker image that is meant to be used to backup your Docker volumes us
 
 This container needs to mount the Docker socket to get the list of Docker volumes of the specified `VOLUME_DRIVER`, which is `local` by default. The directory containing the volumes for that particular driver also needs to be mounted. Finally, you need to bind mount a host directory or a Docker volume ( with a different driver than the volumes that you want to back up ) to the `/backup` directory to persist the backups.
 
- Backups will be run on the given `CRON_SCHEDULE` which is `0 0 * * *` ( daily at 12:00am ) by default. Rdiff will keep diffs that allow you to reproduce any backup up to the `BACKUP_RETENTION` time period which is `12M` ( 12 months ) by default.
+ Backups will be run on the given `CRON_SCHEDULE` which is `0 0 * * *` ( daily at 12:00am ) by default. rdiff-backup will keep diffs that allow you to reproduce any backup up to the `BACKUP_RETENTION` time period which is `12M` ( 12 months ) by default. Each volume is backed up individually using rdiff-backup to a directory in `/backup` of the same name.
 
 A Docker Compose file would look like this:
 
@@ -89,9 +89,23 @@ The `CRON_SCHEDULE` is the schedule on which the backup script will be executed.
 The `BACKUP_RETENTION` is the length of time that the backup history is kept. Any backups older than the specified time will be deleted when a new backup is made. The details of the time format can be found on the [rdiff-backup man page](https://github.com/sol1/rdiff-backup/blob/8ccc5a3b44c996ecd810f8d5d586d0da6435cc32/rdiff-backup/rdiff-backup.1#L601).
 
 **Default:** `12M` ( 12 months )
+**See also:** `FORCE_BACKUP_CLEANUP`
+
+#### FORCE_BACKUP_CLEANUP
+
+If `FORCE_BACKUP_CLEANUP` is set to 'true' the container will clean up backups older than the `BACKUP_RETENTION` even if it means deleting multiple revisions. It is slightly safer to leave this set to `false` because it will be sure not to delete more than one old revision at a time. In case of a mistake in the value of `BACKUP_RETENTION`, it will preven the deletion of a large portion of backup history.
+
+**Default:** `false`
 
 #### BACKUP_DIR
 
 The directory in the container to make backups to. In order for the backups to be useful, you must either bind mount a host directory or mount a docker volume ( with a different driver than the one that you are backup up ) to this path in order to persist the backups.
 
 **Default:** `/backup`
+
+#### HOST_DIR
+
+The `HOST_DIR` is the prefix that should be applied to the Docker volume path when mounting the Docker volumes directory. This shouldn't need to be changed for any reason.
+
+**Default:** `/host`
+
