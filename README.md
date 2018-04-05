@@ -19,10 +19,10 @@ services:
   rdiff-volume-backup:
     image: kadimasolutions/rdiff-volume-backup
     volumes:
-     - /var/run/docker.sock:/var/run/docker.sock
+     - /var/run/docker.sock:/var/run/docker.sock:ro
      # This will be different for different volume drivers and Docker
      # configurations
-     - /var/lib/docker/volumes:/host/var/lib/docker/volumes
+     - /var/lib/docker/volumes:/host/var/lib/docker/volumes:ro
      # Bind mount a host directory to persist backups OR
      - /backup:/backup
      # Mount a docker volume with a different driver
